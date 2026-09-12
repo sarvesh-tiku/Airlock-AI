@@ -2,7 +2,7 @@
 
 **Context integrity for coding agents working from Linear issues.**
 
-[Live playground](https://sarvesh-tiku.github.io/airlock-ai/) · [![CI](https://github.com/sarvesh-tiku/airlock/actions/workflows/ci.yml/badge.svg)](https://github.com/sarvesh-tiku/airlock/actions/workflows/ci.yml) · Node 22, zero dependencies · Python and TypeScript clients
+[Live playground](https://sarvesh-tiku.github.io/Airlock-AI/) · [![CI](https://github.com/sarvesh-tiku/airlock/actions/workflows/ci.yml/badge.svg)](https://github.com/sarvesh-tiku/airlock/actions/workflows/ci.yml) · Node 22, zero dependencies · Python and TypeScript clients
 
 > Agents shouldn't just validate context before they reason. They should validate that the world they reasoned about is still the world they're about to act on.
 
