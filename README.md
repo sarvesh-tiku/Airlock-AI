@@ -42,6 +42,7 @@ Re-planning is refused until the ticket itself changes. A revision that still co
 
 ## Architecture
 
+<div align="center">
 ```
                  LINEAR  (source of truth, never the enforcement point)
        ┌──────────────────────────────┐   ┌──────────────────────────┐
@@ -74,7 +75,7 @@ Re-planning is refused until the ticket itself changes. A revision that still co
        └────────────────────────┘   │ DENY → command never runs        │
                  AGENT PROCESS      └──────────────────────────────────┘
 ```
-
+</div>
 Linear holds the decisions; Airlock holds the leases and makes every allow/deny call deterministically. Agents opt in through a wrapper or client that asks the gate immediately before acting and fails closed when Airlock is unreachable.
 
 
