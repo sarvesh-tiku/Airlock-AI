@@ -8,6 +8,10 @@ A coding agent reads a ticket, plans, and starts working. Then a human changes a
 
 Built from scratch for the September 12, 2026 *Agents, Everywhere* hackathon (AI Tinkerers, with OpenAI). All `AIR-*` and `SEC-*` issues are fictional sample data.
 
+## Try it without installing
+
+A static playground runs the same gate engine in your browser at **https://sarvesh-tiku.github.io/airlock/** (sample data only; live Linear, webhooks, model review, and process pausing need the server below). It is generated from the real sources by `make pages`.
+
 ## Run
 
 Requires Node.js 22+. No package install, database, or credentials are needed for the sample workspace.

@@ -4,7 +4,7 @@ NODE  ?= node
 PY    ?= python3
 PORT  ?= 3000
 
-.PHONY: help start dev test test-node test-python test-ts check seed demo-reset docker docker-run clean
+.PHONY: help start dev test test-node test-python test-ts check seed demo-reset docker docker-run pages clean
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}'
@@ -40,6 +40,9 @@ docker: ## Build the container image
 
 docker-run: ## Run the container on $(PORT) with your .env
 	docker run --rm -p $(PORT):3000 --env-file .env airlock
+
+pages: ## Rebuild the static GitHub Pages playground in docs/
+	$(NODE) scripts/build-pages.mjs
 
 clean: ## Remove runtime state
 	rm -rf data/state.json data/state.json.tmp
