@@ -40,6 +40,44 @@ The same action that passed a minute earlier is denied. The result carries plann
 
 Re-planning is refused until the ticket itself changes. A revision that still contradicts the policy ("keep refresh tokens, encrypt them") is issued as rev 2 and denied as `INCONSISTENT_CONTEXT`. A revision to session cookies is rev 3 and passes, and the process resumes. Every decision lands in an audit table keyed by lease revision and fact versions.
 
+## Architecture
+
+```
+                 LINEAR  (source of truth, never the enforcement point)
+       ┌──────────────────────────────┐   ┌──────────────────────────┐
+       │ issue + parent               │   │ webhook  (HMAC-signed)   │
+       │ related  → constraints       │   │ Issue / Comment events   │
+       │ blocking → dependencies      │   └────────────┬─────────────┘
+       └──────────────┬───────────────┘                │ change
+                      │ import · sync                  │
+                      ▼                                ▼
+  ╔═══════════════════════════════════════════════════════════════════════╗
+  ║  AIRLOCK CONTROL PLANE                                src/engine.js   ║
+  ║                                                                       ║
+  ║   ┌────────────────────────┐    ┌────────────────────┐   ┌──────────┐ ║
+  ║   │ CONTEXT LEASE          │    │ GATE               │   │ AUDIT    │ ║
+  ║   │  requirement           │    │  1 freshness       │   │ lease    │ ║
+  ║   │  constraints           │ ─▶ │  2 consistency     │ ─▶│ revision │ ║
+  ║   │  dependencies          │    │  3 provenance      │   │ + every  │ ║
+  ║   │  authority             │    │  4 authority       │   │ fact     │ ║
+  ║   │  each: source, author, │    │  5 concurrency     │   │ version  │ ║
+  ║   │  time, version hash    │    │  first failure     │   └──────────┘ ║
+  ║   │  watch set · revision  │    │  decides           │ ◀ LLM review   ║
+  ║   └───────────┬────────────┘    └─────────┬──────────┘   (advisory)   ║
+  ║               │ invalidated               │ ALLOW / DENY              ║
+  ╚═══════════════╪═══════════════════════════╪═══════════════════════════╝
+                  ▼                           ▼
+       ┌────────────────────────┐   ┌──────────────────────────────────┐
+       │ guarded-session        │   │ guarded-action · Python · TS     │
+       │ SIGSTOP on invalidate  │   │ asks the gate right before       │
+       │ SIGCONT after re-plan  │   │ open-pr · merge · deploy · …     │
+       └────────────────────────┘   │ DENY → command never runs        │
+                 AGENT PROCESS      └──────────────────────────────────┘
+```
+
+Linear holds the decisions; Airlock holds the leases and makes every allow/deny call deterministically. Agents opt in through a wrapper or client that asks the gate immediately before acting and fails closed when Airlock is unreachable.
+
+
 ## Two agents, one contract
 
 Agent A reads the session API contract to build the login UI. Agent B is delegated to change that contract. B is stopped: its write set intersects A's read set. Release A's lease and B proceeds. Optimistic concurrency control, applied to agents.
