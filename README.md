@@ -23,7 +23,7 @@
 The check at 11:42 was correct. The action at 11:49 was wrong. That is a time-of-check to time-of-use bug. Add a second agent touching the same files and it is a concurrency bug. Airlock treats it as both: versioned snapshots, invalidation on change, and a check immediately before the action rather than at the start.
 
 <img width="1339" height="839" alt="Screenshot 2026-09-12 at 15 32 38" src="https://github.com/user-attachments/assets/c9e161ed-d0be-4822-b92d-a01fbcc00df4" />
-
+Sample Linear Workpage
 ## Context leases
 
 Delegating an issue issues a **context lease**: a snapshot of the requirement, constraints, dependencies, and delegated authority. Every fact carries source issue, author, timestamp, and a version hash. The watch set comes from Linear's own graph: parent, related issues (constraints), blocking issues (dependencies).
