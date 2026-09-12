@@ -93,6 +93,15 @@ Re-planning keeps the lease id stable and bumps its revision, so a wrapper polls
 
 The session guard also sends a best-effort heartbeat to `POST /api/sessions`, so the dashboard shows each guarded process next to its lease as **running**, **paused**, or **exited**. The heartbeat is informational only; enforcement is the signal the guard sends to the process.
 
+## Clients for agents in other languages
+
+The wrappers above are Node. The same contract is available for agents written in Python or TypeScript, with no dependencies in either:
+
+- `sdk/python/airlock.py`: `Airlock` client, `@airlock.guarded(...)` decorator, `require()` that raises `ActionDenied`, and a `guard_session()` that pauses a child process with SIGSTOP exactly like the Node guard. CLI: `python -m airlock gate|run|session|lease|show`. Tests spawn a real server: `python3 -m unittest discover -s sdk/python`.
+- `sdk/typescript/airlock.ts`: typed `Airlock` client with `Lease`, `Decision`, `Check`, and `Fact` interfaces, `require()`, and `guarded()`. Runs as-is under `node --experimental-strip-types` or any bundler. Type-check with `npx tsc -p sdk/typescript`.
+
+`make test` runs the Node, Python, and TypeScript suites. `make docker` builds a container that keeps state in a `/data` volume and reads secrets only from the environment. `scripts/demo-reset.sh` seeds fresh Linear issues and resets the dashboard before a demo.
+
 ## The dashboard
 
 The control surface at `http://127.0.0.1:3000` shows the work graph drawn from the issue links (parent, constrained-by, depends-on) with changed sources highlighted; a guided stepper that tracks your progress through the scenario; each context lease with a planned-to-changed-to-checked timeline, its scopes, a diff of changed facts, and the full facts table with provenance; the pre-action gate with all five check results; the event trail; and the audit table. Guarded processes appear on their lease as they run, pause, and resume.
