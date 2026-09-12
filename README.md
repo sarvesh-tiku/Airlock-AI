@@ -37,7 +37,6 @@ Security posts the decision. The lease flips to invalid with a diff of the fact 
 
 The same action that passed a minute earlier is denied. The result carries planned-at and changed-at timestamps and names the invariant enforced.
 
-![Denied at the gate](docs/screenshots/gate-denied.png)
 
 Re-planning is refused until the ticket itself changes. A revision that still contradicts the policy ("keep refresh tokens, encrypt them") is issued as rev 2 and denied as `INCONSISTENT_CONTEXT`. A revision to session cookies is rev 3 and passes, and the process resumes. Every decision lands in an audit table keyed by lease revision and fact versions.
 
@@ -45,7 +44,6 @@ Re-planning is refused until the ticket itself changes. A revision that still co
 
 Agent A reads the session API contract to build the login UI. Agent B is delegated to change that contract. B is stopped: its write set intersects A's read set. Release A's lease and B proceeds. Optimistic concurrency control, applied to agents.
 
-![Agent collision](docs/screenshots/collision.png)
 
 ## Five checks, five invariants
 
