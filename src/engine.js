@@ -296,7 +296,7 @@ export function gate(state, { leaseId, action, resources = [] }) {
   } else checks.push({ name: 'freshness', ok: true, detail: `${Object.keys(lease.watches).length} watched sources match the rev ${lease.revision} snapshot.` });
 
   // 2. Consistency: active constraints must not contradict the requirement.
-  const consistency = assessLeaseConsistency(lease, lease.consistency?.findings.filter(f => f.method === 'model'));
+  const consistency = assessLeaseConsistency(lease, lease.consistency?.methods?.includes('model') ? lease.consistency.findings.filter(f => f.method === 'model') : null);
   checks.push(consistency.status === 'consistent'
     ? { name: 'consistency', ok: true, detail: `No contradiction among ${lease.facts.filter(f => f.kind !== 'authority').length} facts (${consistency.methods.join(' + ')}).` }
     : { name: 'consistency', ok: false, code: 'INCONSISTENT_CONTEXT', detail: consistency.findings[0].explanation });
