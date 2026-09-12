@@ -43,15 +43,16 @@ Re-planning is refused until the ticket itself changes. A revision that still co
 ## Architecture
 
 <div align="center">
+
 ```
-                 LINEAR  (source of truth, never the enforcement point)
-       ┌──────────────────────────────┐   ┌──────────────────────────┐
-       │ issue + parent               │   │ webhook  (HMAC-signed)   │
-       │ related  → constraints       │   │ Issue / Comment events   │
-       │ blocking → dependencies      │   └────────────┬─────────────┘
-       └──────────────┬───────────────┘                │ change
-                      │ import · sync                  │
-                      ▼                                ▼
+                 LINEAR  (source of truth, never the enforcement point)    
+       ┌──────────────────────────────┐   ┌──────────────────────────┐     
+       │ issue + parent               │   │ webhook  (HMAC-signed)   │     
+       │ related  → constraints       │   │ Issue / Comment events   │     
+       │ blocking → dependencies      │   └────────────┬─────────────┘     
+       └──────────────┬───────────────┘                │ change            
+                      │ import · sync                  │                   
+                      ▼                                ▼                   
   ╔═══════════════════════════════════════════════════════════════════════╗
   ║  AIRLOCK CONTROL PLANE                                src/engine.js   ║
   ║                                                                       ║
@@ -67,15 +68,17 @@ Re-planning is refused until the ticket itself changes. A revision that still co
   ║   └───────────┬────────────┘    └─────────┬──────────┘   (advisory)   ║
   ║               │ invalidated               │ ALLOW / DENY              ║
   ╚═══════════════╪═══════════════════════════╪═══════════════════════════╝
-                  ▼                           ▼
-       ┌────────────────────────┐   ┌──────────────────────────────────┐
-       │ guarded-session        │   │ guarded-action · Python · TS     │
-       │ SIGSTOP on invalidate  │   │ asks the gate right before       │
-       │ SIGCONT after re-plan  │   │ open-pr · merge · deploy · …     │
-       └────────────────────────┘   │ DENY → command never runs        │
-                 AGENT PROCESS      └──────────────────────────────────┘
+                  ▼                           ▼                            
+       ┌────────────────────────┐   ┌──────────────────────────────────┐   
+       │ guarded-session        │   │ guarded-action · Python · TS     │   
+       │ SIGSTOP on invalidate  │   │ asks the gate right before       │   
+       │ SIGCONT after re-plan  │   │ open-pr · merge · deploy · …     │   
+       └────────────────────────┘   │ DENY → command never runs        │   
+                 AGENT PROCESS      └──────────────────────────────────┘   
 ```
+
 </div>
+
 Linear holds the decisions; Airlock holds the leases and makes every allow/deny call deterministically. Agents opt in through a wrapper or client that asks the gate immediately before acting and fails closed when Airlock is unreachable.
 
 
