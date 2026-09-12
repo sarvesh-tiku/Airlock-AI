@@ -1,0 +1,14 @@
+{
+  "name": "airlock",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env src/server.js",
+    "dev": "node --env-file-if-exists=.env --watch src/server.js",
+    "test": "node --test",
+    "linear:check": "node --env-file=.env bin/linear-check.js",
+    "linear:seed": "node --env-file=.env bin/linear-seed.js"
+  },
+  "engines": { "node": ">=22" }
+}

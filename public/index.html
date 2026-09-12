@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111b2a">
+  <title>Airlock · Context integrity for coding agents</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" type="module"></script>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="mark">A<span class="mark-dot">•</span></span><div><strong>AIRLOCK</strong><small>AGENT CONTROL PLANE</small></div></div>
+      <div class="sidebar-label">SCENARIOS</div>
+      <button id="driftTab" class="nav active"><span>◈ &nbsp;Requirement drift</span><span class="nav-num">01</span></button>
+      <button id="collisionTab" class="nav"><span>◇ &nbsp;Agent collision</span><span class="nav-num">02</span></button>
+      <div class="sidebar-label context-label">WATCH SET</div>
+      <div id="sourceList" class="source-list"></div>
+      <div class="sidebar-label context-label">INVARIANTS</div>
+      <div id="invariantList" class="invariant-list"></div>
+      <div class="sidebar-bottom"><div class="indicator"></div><span>GATE SERVICE ONLINE</span></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar"><div class="crumb">Workspace <span>/</span> <span id="crumbScenario">Requirement drift</span></div><div class="top-actions"><span id="modelBadge" class="mode-badge" hidden>MODEL</span><span id="modeBadge" class="mode-badge">SAMPLE DATA</span><a href="https://linear.app/developers/graphql" target="_blank" rel="noopener">Linear API ↗</a></div></header>
+      <div class="content">
+        <section class="intro">
+          <div class="intro-text"><div class="eyebrow"><span class="pulse"></span> CONTEXT INTEGRITY FOR CODING AGENTS</div><h1>Keep agents inside <em>the current reality.</em></h1><p>An agent should not just validate context before it reasons. It should validate that the world it reasoned about is still the world it is about to act on.</p></div>
+          <div class="stepper-card"><div class="eyebrow">GUIDED DEMO</div><ol id="stepper" class="stepper"></ol><p id="stepHint" class="step-hint"></p></div>
+        </section>
+
+        <section class="metrics" aria-label="Workspace metrics"><div><span>ACTIVE LEASES</span><strong id="activeCount">0</strong><small>agents holding context</small></div><div><span>INVALIDATED</span><strong id="invalidCount">0</strong><small>paused pending re-plan</small></div><div><span>FACTS WATCHED</span><strong id="factCount">0</strong><small>versioned, attributed</small></div><div><span>LIVE PROCESSES</span><strong id="sessionCount">0</strong><small id="sessionNote">under session guard</small></div><div><span>GATE RESULT</span><strong id="gateMetric">—</strong><small id="gateMetricNote">most recent action</small></div></section>
+
+        <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+        <section class="panel graph-panel"><div class="panel-header"><div><div class="eyebrow">01 / WORK GRAPH</div><h2>Where context comes from</h2></div><div class="legend"><span><i class="l-parent"></i>parent</span><span><i class="l-constraint"></i>constrained by</span><span><i class="l-dep"></i>depends on</span><span><i class="l-changed"></i>changed</span></div></div><div class="graph-grid"><div class="graph-wrap"><svg id="graph" role="img" aria-label="Issue dependency graph"></svg></div><div id="issueList" class="issue-list"></div></div></section>
+
+        <section class="panel leases-panel"><div class="panel-header"><div><div class="eyebrow">02 / DELEGATION</div><h2>Context leases</h2></div><div id="startControls" class="control-actions"></div></div><div id="liveConfig" class="live-config" hidden><label for="agentName">AGENT NAME</label><input id="agentName" value="Codex"><label for="readScope">READ SET · COMMA SEPARATED</label><input id="readScope" placeholder="e.g. auth/session"><label for="writeScope">WRITE SET · COMMA SEPARATED</label><input id="writeScope" placeholder="e.g. auth/**, database/tokens"></div><div id="leaseList" class="lease-list"></div></section>
+
+        <div class="two-col">
+          <section class="panel gate-panel"><div class="panel-header"><div><div class="eyebrow">03 / SAFETY BOUNDARY</div><h2>Pre-action gate</h2></div><span class="panel-icon">⌁</span></div><p class="panel-description">Immediately before a consequential action, re-read every watched source and run four independent checks plus concurrency. The first failure decides.</p><form id="gateForm"><div class="field"><label for="leaseSelect">AGENT LEASE</label><select id="leaseSelect"></select></div><div class="field-row"><div class="field"><label for="actionSelect">PROPOSED ACTION</label><select id="actionSelect"></select></div><div class="field"><label for="resourceInput">RESOURCE</label><input id="resourceInput" placeholder="e.g. auth/session"></div></div><button type="submit" class="button primary">Check action <span>→</span></button></form><div id="gateResult" class="gate-result empty">No action has been checked yet.</div></section>
+          <section class="panel decision-panel"><div class="panel-header"><div><div class="eyebrow">04 / ENVIRONMENT CHANGE</div><h2>Human decision</h2></div><span class="panel-icon amber">✳</span></div><p id="decisionHelp" class="panel-description"></p><form id="decisionForm"><div class="field"><label for="decisionSource">SOURCE ISSUE</label><select id="decisionSource"></select></div><div class="field"><label for="decisionText">NEW COMMENT</label><textarea id="decisionText" rows="3">Security review complete: refresh tokens must never be persisted. Use session cookies only.</textarea></div><button type="submit" class="button amber-button">Post decision <span>↗</span></button></form><form id="reviseForm" hidden><div class="field"><label for="reviseText">REVISE THE AGENT TASK</label><textarea id="reviseText" rows="3"></textarea></div><div class="preset-row"><span>Presets:</span><button type="button" class="link-button" data-preset="good">Use session cookies</button><button type="button" class="link-button" data-preset="bad">Keep refresh tokens (still contradicts)</button></div><button type="submit" class="button secondary">Revise task ↗</button></form><div id="liveDecision" class="live-decision" hidden><p>In live mode, decisions happen <b>in Linear</b>: comment on a watched issue or edit the task description, then sync.</p><button id="syncButton" class="button secondary">Sync from Linear ↻</button></div></section>
+        </div>
+
+        <div class="two-col">
+          <section class="panel timeline-panel"><div class="panel-header"><div><div class="eyebrow">05 / EVIDENCE</div><h2>Event trail</h2></div><span class="panel-icon">≡</span></div><div id="eventList" class="event-list"></div></section>
+          <section class="panel audit-panel"><div class="panel-header"><div><div class="eyebrow">06 / TRACEABILITY</div><h2>Audit</h2></div><span class="panel-icon">⧉</span></div><p class="panel-description">Who knew what, decided what, acted when. Each decision carries the lease revision and every fact version behind it.</p><div class="table-wrap"><table id="auditTable" class="audit-table"><thead><tr><th>Time</th><th>Agent</th><th>Action</th><th>Rev</th><th>Decision</th><th>Sources</th></tr></thead><tbody></tbody></table></div></section>
+        </div>
+
+        <section class="connect"><div><div class="eyebrow">RUN A REAL AGENT UNDER A LEASE</div><h2>Pause the process, not just the PR</h2><p>Wrap a long-running agent with the session guard. On invalidation the process receives <code>SIGSTOP</code>; a clean re-plan sends <code>SIGCONT</code>. It reports here so you can watch it. Wrap single consequential commands with <code>guarded-action</code>.</p><pre id="guardSnippet" class="snippet"></pre></div><div><div class="eyebrow">REAL WORKSPACE</div><h2>Import from Linear</h2><p>Reads the issue, its parent, issues that block it (dependencies), and related issues (constraints). Consequential gate calls re-sync before deciding.</p><form id="importForm"><input id="issueIdInput" placeholder="e.g. SAR-8" aria-label="Linear issue identifier"><button class="button secondary" type="submit">Import ↗</button></form></div></section>
+        <footer>Airlock prototype · Freshness, consistency, provenance, authority, and concurrency are separate checks. Model review is advisory and can never turn a denial into an allow.</footer>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
