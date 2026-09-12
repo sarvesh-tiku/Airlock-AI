@@ -5,6 +5,8 @@
 [Live playground](https://sarvesh-tiku.github.io/Airlock-AI/) · [![CI](https://github.com/sarvesh-tiku/airlock/actions/workflows/ci.yml/badge.svg)](https://github.com/sarvesh-tiku/airlock/actions/workflows/ci.yml) · Node 22, zero dependencies · Python and TypeScript clients
 
 > An agent can be right when it starts and wrong when it acts. They should validate that the world they reasoned about is still the world they're about to act on.
+> Airlock is built for Linear, where engineering teams already plan and discuss work. It uses linked issues and live decisions to catch stale requirements before coding agents act.
+
 
 ![Airlock dashboard](docs/screenshots/overview.png)
 
